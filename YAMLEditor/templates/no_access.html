@@ -1,0 +1,8 @@
+{% block title %}No Access{% endblock title %}
+{% block content %}
+<h1>You do not have access to this page!</h1>
+<p>
+  {{ request }}
+  {{ request.user }}
+</p>
+{% endblock content %}

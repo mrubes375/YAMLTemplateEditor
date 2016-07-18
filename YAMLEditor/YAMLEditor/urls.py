@@ -23,6 +23,7 @@ import update.urls
 
 urlpatterns = [
     url(r'^$', index),
+    url(r'^login/', log_in),
     url(r'^admin/', admin.site.urls),
     url(r'^update/', include(update.urls)),
     url(r'^', include(profiles.urls)),
