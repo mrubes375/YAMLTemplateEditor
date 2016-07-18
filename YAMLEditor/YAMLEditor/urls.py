@@ -17,15 +17,13 @@ Including another URLconf
 from django.conf.urls import url, include
 from django.contrib import admin
 from .views import *
-import profiles.urls
 import update.urls
 
 
 urlpatterns = [
     url(r'^$', index),
-    url(r'^login/', log_in),
+    url(r'^login/$', 'django.contrib.auth.views.login', name='login'),
     url(r'^admin/', admin.site.urls),
     url(r'^update/', include(update.urls)),
-    url(r'^', include(profiles.urls)),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework'))
 ]

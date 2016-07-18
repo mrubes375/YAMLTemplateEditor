@@ -16,6 +16,10 @@ from .secrets import *
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+DJANGO_SETTINGS_MODULE = {'BASE_DIR': os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    'template_dir': os.path.join(BASE_DIR, 'templates'),
+
+}
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.9/howto/deployment/checklist/
@@ -38,10 +42,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'profiles',
     'update',
-    'rest_framework',
-    'crispy_forms',
+    # 'rest_framework',
+    # 'crispy_forms',
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -81,10 +84,8 @@ WSGI_APPLICATION = 'YAMLEditor.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'YAMLUpdate',
-        'USER': mysql.username,
-        'PASSWORD': mysql.password,
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3')
     }
 }
 

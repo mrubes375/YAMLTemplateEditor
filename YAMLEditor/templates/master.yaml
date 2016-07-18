@@ -1,0 +1,8 @@
+navbar:
+    name: Sample Project
+    login: Login
+    logout: Logout
+    edit_app: Updater
+greeting: Welcome to YAMLUpdate
+text1: lorem ipsum
+text2: this is some sample text
