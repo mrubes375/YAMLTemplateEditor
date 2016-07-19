@@ -2,8 +2,12 @@ from django.shortcuts import render, HttpResponse
 from django.contrib.auth import authenticate, login
 from .yaml_config import get_yaml
 
+def c_render(request, page, context={}):
+    return render(request, page, dict({'user': request.user, 'my_yaml': get_yaml(),}.items()+context.items()))
+
 def index(request):
-    return render(request, 'index.html', {'user': request.user, 'my_yaml': get_yaml(),})
+    return c_render(request, 'index.html')
+    # return render(request, 'index.html', {'user': request.user, 'my_yaml': get_yaml(),})
 
 def login(request):
     # username = request.POST['username']

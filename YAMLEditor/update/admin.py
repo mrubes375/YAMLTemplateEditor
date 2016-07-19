@@ -4,4 +4,4 @@ from .models import Change
 
 @admin.register(Change)
 class ChangesRegister(admin.ModelAdmin):
-    pass
+    list_display = ('user', 'template', 'date')

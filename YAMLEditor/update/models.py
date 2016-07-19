@@ -8,3 +8,4 @@ class Change(models.Model):
     template = models.CharField(max_length=50)
     old_context = models.CharField(max_length=1000)
     new_context = models.CharField(max_length=1000)
+ 

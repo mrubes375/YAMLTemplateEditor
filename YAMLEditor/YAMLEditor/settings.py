@@ -37,8 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
     'update',
-    # 'rest_framework',
     # 'crispy_forms',
 ]
 
@@ -86,7 +86,7 @@ WSGI_APPLICATION = 'YAMLEditor.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3')
+        'NAME': os.path.join(BASE_DIR,'db.sqlite3'),
     }
 }
 
