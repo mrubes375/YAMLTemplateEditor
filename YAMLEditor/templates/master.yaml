@@ -2,9 +2,13 @@ navbar:
     name: Sample Project
     login: Login
     logout: Logout
-    edit_app: Updater
     home: Home
     about: About
+    register: Register
+    dropdown:
+        title: Updater
+        start: Start App
+        log: Log
 greeting: Welcome to YAMLUpdate
 text1: lorem ipsum
 text2: this is some sample text

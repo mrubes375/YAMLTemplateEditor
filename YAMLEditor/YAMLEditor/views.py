@@ -2,8 +2,13 @@ from django.shortcuts import render, HttpResponse
 from django.contrib.auth import authenticate, login
 from .yaml_config import get_yaml
 
+
+
 def c_render(request, page, context={}):
-    return render(request, page, dict({'user': request.user, 'my_yaml': get_yaml(),}.items()+context.items()))
+    con_dict = {'user': request.user, 'my_yaml': get_yaml()}
+    fin_dict = con_dict.copy()
+    fin_dict.update(context)
+    return render(request, page, context=fin_dict)
 
 def index(request):
     return c_render(request, 'index.html')
