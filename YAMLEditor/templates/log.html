@@ -1,0 +1,11 @@
+{% extends "layout/layout.html" %}
+{% block title %}{{ my_yaml.log.title }}{% endblock title %}
+{% block content %}
+<h1>{{ my_yaml.log.title }}</h1>
+
+<table class="table table-hover">
+  <tr>
+      {{ obj.user }}
+  </tr>
+</table>
+{% endblock content %}

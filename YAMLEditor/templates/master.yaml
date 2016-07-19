@@ -12,3 +12,5 @@ navbar:
 greeting: Welcome to YAMLUpdate
 text1: lorem ipsum
 text2: this is some sample text
+log:
+    title: Log

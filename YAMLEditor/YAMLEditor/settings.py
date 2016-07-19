@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'update',
-    # 'crispy_forms',
+    'sass_processor'
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -141,3 +141,14 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
     ]
 }
+
+#Sass Compiler settings
+# SASS_PROCESSOR_INCLUDE_DIRS = (
+#     STATICFILES_DIRS[0],
+# )
+#
+# STATICFILES_FINDERS = (
+#     'django.contrib.staticfiles.finders.FileSystemFinder',
+#     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+#     'sass_processor.finders.CssFinder',
+# )
