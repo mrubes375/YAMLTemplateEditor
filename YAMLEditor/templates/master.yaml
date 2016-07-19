@@ -3,6 +3,8 @@ navbar:
     login: Login
     logout: Logout
     edit_app: Updater
+    home: Home
+    about: About
 greeting: Welcome to YAMLUpdate
 text1: lorem ipsum
 text2: this is some sample text

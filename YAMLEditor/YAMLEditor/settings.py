@@ -16,11 +16,6 @@ from .secrets import *
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-DJANGO_SETTINGS_MODULE = {'BASE_DIR': os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    'template_dir': os.path.join(BASE_DIR, 'templates'),
-
-}
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.9/howto/deployment/checklist/
 
@@ -61,6 +56,12 @@ MIDDLEWARE_CLASSES = [
 ROOT_URLCONF = 'YAMLEditor.urls'
 
 TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.jinja2.Jinja2',
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
+        'APP_DIRS': True,
+        'OPTIONS': {'environment': 'jinja2_config.environment',},
+    },
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [os.path.join(BASE_DIR, 'templates')],
