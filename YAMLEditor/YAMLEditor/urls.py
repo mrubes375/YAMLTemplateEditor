@@ -14,16 +14,19 @@ Including another URLconf
     2. Import the include() function: from django.conf.urls import url, include
     3. Add a URL to urlpatterns:  url(r'^blog/', include(blog_urls))
 """
-from django.conf.urls import url, include
+from django.conf.urls import url, include, handler404, handler500
 from django.contrib import admin
-from .views import *
+from .views import index, no_access
 import update.urls
 
+handler404 = 'YAMLEditor.views.not_found'
+handler500 = 'YAMLEditor.views.server_error'
 
 urlpatterns = [
     url(r'^$', index),
     url(r'^login/$', 'django.contrib.auth.views.login', name='login'),
     url(r'^admin/', admin.site.urls),
     url(r'^update/', include(update.urls)),
-    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework'))
+    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    url(r'^no_access/$', no_access)
 ]

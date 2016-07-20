@@ -30,3 +30,6 @@ response:
     500:
         title: 500
         text: 500 Internal Server Error
+no_access:
+    text: You do not have access to this page!
+    title: No Access
