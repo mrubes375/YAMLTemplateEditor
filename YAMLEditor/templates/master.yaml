@@ -14,3 +14,12 @@ text1: lorem ipsum
 text2: this is some sample text
 log:
     title: Log
+    details:
+      title: Change
+update:
+  date: Date
+  files_changed: Files Changed
+  user: User
+  template: Template
+  old_context: Old Context
+  new_context: New Context

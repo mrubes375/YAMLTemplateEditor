@@ -1,0 +1,10 @@
+{% extends "layout/layout.html" %}
+{% block title %}{{ my_yaml.log.details.title }} {{ change.id }}{% endblock title %}
+{% block content %}
+
+
+<div class="row">
+  <div class="col-md-6">{{ my_yaml.update.date }}: {{ change.old_context }}</div>
+  <div class="col-md-6">{{ my_yaml.update.new_context }}: {{ change.new_context }}</div>
+</div>
+{% endblock content %}

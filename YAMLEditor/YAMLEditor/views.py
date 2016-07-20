@@ -26,4 +26,4 @@ def login(request):
     #         return HttpResponse("Disabled Account")
     # else:
     #     return HttpResponse("Invalid Login")
-    return render(request, 'login.html', {'user': request.user, 'my_yaml': get_yaml(),})
+    return c_render(request, 'login.html')
