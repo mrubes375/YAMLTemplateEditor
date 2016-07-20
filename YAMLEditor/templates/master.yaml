@@ -16,10 +16,17 @@ log:
     title: Log
     details:
       title: Change
-update:
-  date: Date
+updater:
+  date: Date Modified
   files_changed: Files Changed
   user: User
   template: Template
   old_context: Old Context
   new_context: New Context
+response:
+    404:
+        title: 404
+        text: 404 Not Found
+    500:
+        title: 500
+        text: 500 Internal Server Error

@@ -4,7 +4,36 @@
 
 
 <div class="row">
-  <div class="col-md-6">{{ my_yaml.update.date }}: {{ change.old_context }}</div>
-  <div class="col-md-6">{{ my_yaml.update.new_context }}: {{ change.new_context }}</div>
+    <div class="container">
+        <h1 class="lead">Change #{{ change.id }}</h1>
+        <table class="table table-striped">
+            <tbody>
+                <tr>
+                    <th>{{ my_yaml.updater.date }}</th>
+                    <th>{{ date(change.date) }}</th>
+                </tr>
+                <tr>
+                    <th>{{ my_yaml.updater.user }}</th>
+                    <th>{{ change.user }}</th>
+                </tr>
+                <tr>
+                    <th>{{ my_yaml.updater.template }}</th>
+                    <th>{{ change.template }}</th>
+                </tr>
+                <tr>
+                    <th>{{ my_yaml.updater.old_context }}</th>
+                    <th>{{ change.old_context }}</th>
+                </tr>
+                <tr>
+                    <th>{{ my_yaml.updater.new_context }}</th>
+                    <th>{{ change.new_context }}</th>
+                </tr>
+                <tr>
+                    <th>{{ my_yaml.updater.files_changed }}</th>
+                    <th>{{ change.files_changed }}</th>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 </div>
 {% endblock content %}
