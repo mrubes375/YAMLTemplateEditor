@@ -149,3 +149,5 @@ pip-selfcheck.json
 YAMLEditor/YAMLEditor/secrets.py
 YAMLEditor/profiles/migrations/*
 YAMLEditor/update/migrations/*
+
+*.swp

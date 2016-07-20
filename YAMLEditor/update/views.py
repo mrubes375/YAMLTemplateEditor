@@ -13,10 +13,14 @@ def admins_only(view):
 
 @admins_only
 def log(request):
-    changes = Change.objects.all()
+    changes = Change.objects.all().order_by('-date')
     return c_render(request, 'log.html', {'changes': changes})
 
 @admins_only
 def log_details(request, id):
     change = get_object_or_404(Change, pk=id)
     return c_render(request, 'log_details.html', {'change': change})
+
+class Update:
+    def __init__():
+        pass

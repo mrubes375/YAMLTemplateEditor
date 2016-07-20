@@ -28,5 +28,6 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^update/', include(update.urls)),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
-    url(r'^no_access/$', no_access)
+    url(r'^no_access/$', no_access),
+    url(r'^logout/$', 'django.contrib.auth.views.logout', {'next_page': '/'})
 ]

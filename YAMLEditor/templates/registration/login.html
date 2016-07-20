@@ -1,11 +1,12 @@
 {% extends "layout/layout.html" %}
+{% block title %}{{ my_yaml.navbar.login }}{% endblock title %}
 {% block content %}
 
 {% if form.errors %}
 <p>Login credentials not validated. Please try again.</p>
 {% endif %}
 
-<form action="{% url 'django.contrib.auth.views.login' %}" method="post">
+<form action="{{ url('django.contrib.auth.views.login') }}" method="post">
     <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
     <table>
         <tr>

@@ -2,4 +2,6 @@
 {% block title %}{{ my_yaml.no_access.title }}{% endblock title %}
 {% block content %}
 <h1>{{ my_yaml.no_access.text }}</h1>
+<h1>{{ request.path }}</h1>
+<h1>{{ request.FILES }}</h1>
 {% endblock content %}
