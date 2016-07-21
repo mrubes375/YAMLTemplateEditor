@@ -1,4 +1,4 @@
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import render, get_object_or_404, redirect, HttpResponse
 from YAMLEditor.views import c_render, no_access
 from .models import Change
 from datetime import datetime
@@ -14,6 +14,8 @@ def admins_only(view):
 @admins_only
 def log(request):
     changes = Change.objects.all().order_by('-date')
+    if 'update' in request.META['PATH_INFO']:
+        print(True)
     return c_render(request, 'log.html', {'changes': changes})
 
 @admins_only
@@ -21,6 +23,9 @@ def log_details(request, id):
     change = get_object_or_404(Change, pk=id)
     return c_render(request, 'log_details.html', {'change': change})
 
+def app(request):
+    print(request.META)
+    return HttpResponse('hi')
 class Update:
     def __init__():
         pass
