@@ -7,7 +7,7 @@ from datetime import datetime
 def admins_only(view):
     def _decorated(request, *args, **kwargs):
         if not request.user.is_staff:
-            return redirect('/no_access')
+            return c_render(request, 'no_access.html')
         return view(request, *args, **kwargs)
     return _decorated
 
