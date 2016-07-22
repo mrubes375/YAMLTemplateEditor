@@ -1,9 +1,14 @@
 from django.shortcuts import render, HttpResponse, render_to_response
 from django.contrib.auth import authenticate, login
 from .yaml_config import get_yaml
+from rest_framework import viewsets
+from django.contrib.auth.models import User
+from .serializers import UserSerializer
 
 
-
+class UserViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all().order_by('-date_joined')
+    serializer_class = UserSerializer
 
 def context_dict(request, context):
     con_dict = {'user': request.user, 'my_yaml': get_yaml()}

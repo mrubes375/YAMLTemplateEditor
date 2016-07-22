@@ -1,8 +1,14 @@
 from django.shortcuts import render, get_object_or_404, redirect, HttpResponse
 from YAMLEditor.views import c_render, no_access
+from update.serializers import ChangeSerializer
 from .models import Change
 from datetime import datetime
+from rest_framework import viewsets
 # Create your views here.
+
+class ChangeViewSet(viewsets.ModelViewSet):
+    queryset = Change.objects.all().order_by('-date')
+    serializer_class = ChangeSerializer
 
 def admins_only(view):
     def _decorated(request, *args, **kwargs):

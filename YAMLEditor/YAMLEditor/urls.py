@@ -16,9 +16,14 @@ Including another URLconf
 """
 from django.conf.urls import url, include, handler404, handler500
 from django.contrib import admin
-from .views import index, no_access
+from rest_framework import routers
+from .views import index, no_access, UserViewSet
+from update.views import ChangeViewSet
 import update.urls
 
+router = routers.DefaultRouter()
+router.register(r'change', ChangeViewSet)
+router.register(r'user', UserViewSet)
 handler404 = 'YAMLEditor.views.not_found'
 handler500 = 'YAMLEditor.views.server_error'
 
@@ -28,6 +33,7 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^update/', include(update.urls)),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    url(r'^', include(router.urls)),
     url(r'^no_access/$', no_access),
     url(r'^logout/$', 'django.contrib.auth.views.logout', {'next_page': '/'})
 ]

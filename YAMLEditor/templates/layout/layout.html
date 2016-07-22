@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <title>{% block title %}{% endblock title %}</title>
     <link rel="stylesheet" href={{ static('css/bootstrap.min.css') }}>
+    <link href="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/css/bootstrap-editable.css" rel="stylesheet"/>
   </head>
   <body>
     <nav class="navbar navbar-default navbar-static-top">
@@ -36,6 +37,7 @@
             <li><a href="/register">{{ my_yaml.navbar.register }}</a></li>
             <li><a href="/login">{{ my_yaml.navbar.login }}</a></li>
             {% else %}
+            <li><button type="button" class="btn btn-danger pull-right">Edit</button></li>
             <li><a href="/logout">{{ my_yaml.navbar.logout }}</a></li>
             {% endif %}
           </ul>
@@ -50,6 +52,8 @@
     </div>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script src={{ static('js/bootstrap.min.js') }}></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
+    <script src={{ static('js/editor.js') }}></script>
     <!-- {% if request.url %}{% endif %} -->
   </body>
 </html>
