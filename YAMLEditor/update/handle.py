@@ -6,6 +6,13 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from YAMLEditor.yaml_config import get_yaml
 from re import search
 
+# class ExtendedFiles:
+#     def __init__(self, name):
+#         self.file_name = name
+#         self.children = []
+#     def __str__(self):
+#         return "File: %s, Children: %s" % (self.file_name, self.children)
+
 class Handler:
     def __init__(self):
         self.template_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'templates')
@@ -37,19 +44,27 @@ class Handler:
     def search_files(self, template):
         regex_pattern = '(?<=extends\s").*l'
         queue = set(copy.copy(self.all_files))
-        searched = set()
+        extends = dict()
+        found = set()
         while len(queue)>0:
             searching = queue.pop()
             contents = open(searching, 'r').read()
             if "extends" in contents:
-                queue.add(search(regex_pattern, contents).group())
+                match = search(regex_pattern, contents).group()
+                queue.add(match)
+                if match in extends:
+                    extends[match].add(searching)
+                else:
+                    extends[match] = set()
+                    extends[match].add(searching)
             answer = (template in contents)
-            # print(contents)
             if answer:
-                self.files_changed.append(searching)
-x = Handler()
-x.get_all_files()
-print(os.getcwd())
-x.search_files('my_yaml.no_access.title')
-print(x.all_files)
-print(x.files_changed)
+                found.add(searching)
+        for html in found:
+            found = found.union(extends[html])
+        self.files_changed = found
+# x = Handler()
+# x.get_all_files()
+# x.search_files('my_yaml.navbar.name')
+# print(x.all_files)
+# print(x.files_changed)
