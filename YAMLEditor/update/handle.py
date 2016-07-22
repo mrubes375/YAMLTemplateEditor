@@ -1,15 +1,14 @@
 import sys
 import os
 from datetime import datetime
+import copy
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from YAMLEditor.yaml_config import get_yaml
+from re import search
 
 class Handler:
-    def __init__(self, template_dir=os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'templates')):
-        if template_dir is None:
-            self.template_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'templates')
-        else:
-            self.template_dir = template_dir
+    def __init__(self):
+        self.template_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'templates')
         os.chdir(self.template_dir)
         self.files_changed = list()
         self.all_files = list()
@@ -36,17 +35,21 @@ class Handler:
                     queue.append(checking+'/'+additional_file)
         os.chdir(self.template_dir)
     def search_files(self, template):
-        queue = self.all_files
+        regex_pattern = '(?<=extends\s").*l'
+        queue = set(copy.copy(self.all_files))
+        searched = set()
         while len(queue)>0:
-            searching = queue.pop(0)
+            searching = queue.pop()
             contents = open(searching, 'r').read()
+            if "extends" in contents:
+                queue.add(search(regex_pattern, contents).group())
             answer = (template in contents)
-            print(contents)
+            # print(contents)
             if answer:
                 self.files_changed.append(searching)
-# x = Handler()
-# x.get_all_files()
-# print(os.getcwd())
-# x.search_files('my_yaml.no_access.title')
-# print(x.all_files)
-# print(x.files_changed)
+x = Handler()
+x.get_all_files()
+print(os.getcwd())
+x.search_files('my_yaml.no_access.title')
+print(x.all_files)
+print(x.files_changed)

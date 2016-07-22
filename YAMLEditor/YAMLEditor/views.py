@@ -28,10 +28,10 @@ def login(request):
 
 
 def not_found(request):
-    return c_render(request, '404.html')
+    return c_render(request, 'errors/404.html')
 
 def server_error(request):
-    return c_render(request, '500.html')
+    return c_render(request, 'errors/500.html')
 
 def no_access(request):
     return c_render(request, 'no_access.html')
