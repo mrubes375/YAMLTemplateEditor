@@ -4,6 +4,7 @@ from .yaml_config import get_yaml
 from rest_framework import viewsets
 from django.contrib.auth.models import User
 from .serializers import UserSerializer
+from .forms import LoginForm
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -29,7 +30,9 @@ def index(request):
     return c_render(request, 'index.html')
 
 def login(request):
-    return c_render(request, 'login.html')
+
+    form = LoginForm
+    return c_render(request, 'login.html', {'form': form})
 
 
 def not_found(request):
