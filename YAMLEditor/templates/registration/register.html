@@ -1,0 +1,38 @@
+{% extends "layout/layout.html" %}
+{% block title %}{{ my_yaml.navbar.register }}{% endblock title %}
+{% block content %}
+
+{% if form.errors %}
+<p>Login credentials not validated. Please try again.</p>
+{% endif %}
+<form action="/user/" method="post">
+    <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+    <div class="container">
+      {{ form.first_name.errors }}
+      <label for="first_name">First Name:</label>
+      {{ form.first_name }}
+    </div>
+    <div class="container">
+      {{ form.last_name.errors }}
+      <label for="last_name">Last Name:</label>
+      {{ form.last_name }}
+    </div>
+    <div class="container">
+      {{ form.email.errors }}
+      <label for="email">Email:</label>
+      {{ form.email }}
+    </div>
+    <div class="container">
+      {{ form.username.errors }}
+      <label for="username">Username:</label>
+      {{ form.username }}
+    </div>
+    <div class="container">
+      {{ form.password.errors }}
+      <label for="password">Password:</label>
+      {{ form.password }}
+    </div>
+    <p><input type="submit" value="Register" /></p>
+</form>
+
+{% endblock content %}
