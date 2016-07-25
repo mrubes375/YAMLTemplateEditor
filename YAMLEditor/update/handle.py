@@ -23,10 +23,9 @@ class Handler:
         self.template = None
         self.old_context = None
         self.new_context = None
-        self.yaml = None
-    def get_template(self, context):
-        self.old_context = context
         self.yaml = get_yaml()
+    def get_yaml(self):
+        return self.yaml
     def get_all_files(self):
         os.chdir(self.template_dir)
         queue = os.listdir()

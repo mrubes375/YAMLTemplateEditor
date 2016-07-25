@@ -3,12 +3,28 @@ from YAMLEditor.views import c_render, no_access
 from update.serializers import ChangeSerializer
 from .models import Change
 from datetime import datetime
+from django.views.decorators.csrf import csrf_exempt
 from rest_framework import viewsets
+from .handle import Handler
+import json
 # Create your views here.
 
 class ChangeViewSet(viewsets.ModelViewSet):
     queryset = Change.objects.all().order_by('-date')
     serializer_class = ChangeSerializer
+
+@csrf_exempt
+def ajax_context(request):
+    if request.is_ajax():
+        data = json.loads(request.body.decode('utf-8'))
+        old_context = data['old_context'].strip()
+        new_context = data['new_context'].strip()
+        handle = Handler()
+        print(handle.get_yaml()['navbar']['name'])
+
+    else:
+        message = "Nah"
+    return HttpResponse('hi')
 
 def admins_only(view):
     def _decorated(request, *args, **kwargs):
@@ -32,6 +48,7 @@ def log_details(request, id):
 def app(request):
     print(request.META)
     return HttpResponse('hi')
+
 class Update:
     def __init__():
         pass
