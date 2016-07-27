@@ -95,11 +95,11 @@ class ChangeYAML:
         os.chdir(template_dir)
         yaml_file = open("master.yaml", 'r+')
         contents = yaml_file.read()
+        yaml_file.close()
         yaml = ruamel.yaml.load(contents, ruamel.yaml.RoundTripLoader)
         access_keys = self.tag.split('.')[1:]
         count = len(access_keys)
         update = copy.copy(yaml)
-        print(yaml)
         while count>1:
             key = access_keys.pop(0)
             update = update[key]
@@ -107,4 +107,6 @@ class ChangeYAML:
         changed_key = access_keys.pop(0)
         update[changed_key] = self.new_context
         new_contents = ruamel.yaml.dump(yaml, Dumper=ruamel.yaml.RoundTripDumper)
-        print(new_contents)
+        yaml_file = open("master.yaml", 'w+')
+        yaml_file.write(new_contents)
+        yaml_file.close()

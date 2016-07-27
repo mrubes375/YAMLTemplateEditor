@@ -1,24 +1,24 @@
 navbar:
-    name: Sample Project
-    login: Login
-    logout: Logout
-    home: Home
-    about: About
-    register: Register
-    dropdown:
-        title: Updater
-        start: Start App
-        log: Log
+  name: Sample Project
+  login: Login
+  logout: Logout
+  home: Home
+  about: About
+  register: Register
+  dropdown:
+    title: Updater
+    start: Start App
+    log: Log
 greeting: Welcome to YAMLUpdate
 text1: lorem ipsum
 text2: this is some sample text
 log:
-    title: Log
-    details:
-      title: Change
-      date: Date
-      user: User
-      template: Template
+  title: Log
+  details:
+    title: Change
+    date: Date
+    user: User
+    template: Template
 updater:
   date: Date Modified
   files_changed: Files Changed
@@ -27,12 +27,12 @@ updater:
   old_context: Old Context
   new_context: New Context
 response:
-    404:
-        title: 404
-        text: 404 Not Found
-    500:
-        title: 500
-        text: 500 Internal Server Error
+  404:
+    title: 404
+    text: 404 Not Found
+  500:
+    title: 500
+    text: 500 Internal Server Error
 no_access:
-    text: You do not have access to this page!
-    title: No Access
+  text: You do not have access to this page!
+  title: No Access

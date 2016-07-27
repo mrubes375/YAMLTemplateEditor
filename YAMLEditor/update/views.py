@@ -23,10 +23,6 @@ def ajax_context(request):
         new_context = data['new_context'].strip()
         ChangeYAML(tag, new_context).update()
         message = data
-
-
-
-
     else:
         message = "Nah"
     return HttpResponse(message)
@@ -42,8 +38,6 @@ def admins_only(view):
 @admins_only
 def log(request):
     changes = Change.objects.all().order_by('-date')
-    ChangeYAML('my_yaml.log.details.date', 'sdk;klsda').update()
-
     return render_with_yaml(request, 'log.html', {'changes': changes})
 
 @admins_only
