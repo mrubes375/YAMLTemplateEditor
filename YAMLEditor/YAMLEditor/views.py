@@ -5,6 +5,9 @@ from rest_framework import viewsets, permissions
 from django.contrib.auth.models import User
 from .serializers import UserSerializer
 from .forms import RegisterForm
+from tempfile import NamedTemporaryFile
+from .handle import DataBindingDOM
+import os
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -18,9 +21,15 @@ def context_dict(request, context, function=get_yaml):
     fin_dict.update(context)
     return fin_dict
 
-def c_render(request, page, context={}):
+def render_with_yaml(request, page, context={}):
     context=context_dict(request, context)
-    return render(request, page, context)
+    template_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'templates')
+    html = DataBindingDOM(template_dir, page).bind()
+    rendered_file = NamedTemporaryFile(mode='r+', dir=template_dir)
+    rendered_file.write(html)
+    file_name = list(rendered_file.name.split('/'))[-1]
+    print(rendered_file.read())
+    return render(request, file_name, context)
 
 def c_render_to_response(template, request, status_code, context={}):
     response = render_to_response(template, context=context_dict(request, context))
@@ -29,7 +38,7 @@ def c_render_to_response(template, request, status_code, context={}):
 
 
 def index(request):
-    return c_render(request, 'index.html')
+    return render_with_yaml(request, 'index.html')
 
 def register(request):
     if request.method == 'POST':
@@ -39,14 +48,14 @@ def register(request):
             return HttpResponseRedirect('/')
     else:
         form = RegisterForm()
-    return c_render(request, 'registration/register.html', {'form': form})
+    return render_with_yaml(request, 'registration/register.html', {'form': form})
 
 
 def not_found(request):
-    return c_render(request, 'errors/404.html')
+    return render_with_yaml(request, 'errors/404.html')
 
 def server_error(request):
-    return c_render(request, 'errors/500.html')
+    return render_with_yaml(request, 'errors/500.html')
 
 def no_access(request):
-    return c_render(request, 'no_access.html')
+    return render_with_yaml(request, 'no_access.html')

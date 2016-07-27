@@ -3,13 +3,13 @@ jQuery.fn.clickToggle = function(a,b) {
   return this.on("click", cb);
 };
 
-function ChangeTemplateValue(old_context, new_context) {
+function ChangeTemplateValue(tag, new_context) {
     var message;
     $.ajax({
     url: 'http://localhost:8000/update/context/',
     type: 'POST', // This is the default though, you don't actually need to always mention it
     data: JSON.stringify({
-        old_context: old_context,
+        tag: tag,
         new_context: new_context,
     }),
     contentType: "application/json; charset=utf-8",
@@ -25,15 +25,16 @@ function ChangeTemplateValue(old_context, new_context) {
 
 $(document).ready(function (){
     $("button.edit").clickToggle(function() {
-        $("body *").attr('contentEditable', 'true').addClass('editable');
-        var editables = $(".editable");
+        // $("body *").not("script").attr('contentEditable', 'true').addClass('editable');
+        var editables = $('[data]');
+        editables.attr('contentEditable', 'true');
 
         editables.click(function(event){
-            var old_context = $(event.target).text();
+            var tag = $(event.target).attr('data');
             $(this).keyup(function(event){
-                if (event.ctrlKey && event.which ==83 ) {
+                if (event.ctrlKey && event.which==83 ) {
                     var new_context = $(event.target).text();
-                    ChangeTemplateValue(old_context, new_context);
+                    ChangeTemplateValue(tag, new_context);
                 };
             })
         });

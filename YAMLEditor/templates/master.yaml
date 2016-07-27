@@ -16,6 +16,9 @@ log:
     title: Log
     details:
       title: Change
+      date: Date
+      user: User
+      template: Template
 updater:
   date: Date Modified
   files_changed: Files Changed
