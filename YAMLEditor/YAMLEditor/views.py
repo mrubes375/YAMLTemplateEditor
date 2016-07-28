@@ -9,7 +9,6 @@ from tempfile import NamedTemporaryFile
 from .handle import DataBindingDOM
 import os
 
-
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all().order_by('-date_joined')
     permission_clases = (permissions.IsAdminUser,)
@@ -21,15 +20,37 @@ def context_dict(request, context, function=get_yaml):
     fin_dict.update(context)
     return fin_dict
 
+def render_tempfiles_assist(request, page, context={}):
+    pass
+
 def render_with_yaml(request, page, context={}):
     context=context_dict(request, context)
     if request.user.is_staff:
+        # template_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'templates')
+        # html = DataBindingDOM(template_dir, page).bind()
+        # rendered_file = NamedTemporaryFile(mode='r+', dir=template_dir)
+        # rendered_file.write(html)
+        # file_name = list(rendered_file.name.split('/'))[-1]
+        # rendered_file.read()
         template_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'templates')
         html = DataBindingDOM(template_dir, page).bind()
-        rendered_file = NamedTemporaryFile(mode='r+', dir=template_dir)
-        rendered_file.write(html)
-        file_name = list(rendered_file.name.split('/'))[-1]
-        rendered_file.read()
+        if len(html)==2:
+            base_template = NamedTemporaryFile(mode='r+', dir=template_dir, suffix='.html', encoding='utf-8', delete=False)
+            base_template.write(html[0][1])
+            base_template.close()
+            base_name = list(base_template.name.split('/'))[-1]
+            rendered_file_text = html[1][1]
+            rendered_file_text = rendered_file_text.replace(html[0][0], base_name)
+            rendered_file_text = rendered_file_text.replace("<p>", "", 1)
+            rendered_file_text = rendered_file_text.replace("</p>", "", 1)
+            rendered_file_text = rendered_file_text.replace("<html>", "", 1)
+            rendered_file_text = rendered_file_text.replace("</html>", "", 1)
+            rendered_file_text = rendered_file_text.replace("<body>", "", 1)
+            rendered_file_text = rendered_file_text.replace("</body>", "", 1)
+            rendered_file = NamedTemporaryFile(mode='r+', dir=template_dir, suffix='.html', encoding='utf-8', delete=False)
+            rendered_file.write(rendered_file_text)
+            rendered_file.close()
+            file_name = list(rendered_file.name.split('/'))[-1]
     else:
         file_name = page
     return render(request, file_name, context)

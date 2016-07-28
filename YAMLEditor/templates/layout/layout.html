@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <title>{% block title %}{% endblock title %}</title>
-    <link rel="stylesheet" href={{ static('css/bootstrap.min.css') }}>
+    <link rel="stylesheet" href="{{ static('css/bootstrap.min.css') }}">
     <link href="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/css/bootstrap-editable.css" rel="stylesheet"/>
   </head>
   <body>
@@ -37,7 +37,7 @@
             <li><a href="/register">{{ my_yaml.navbar.register }}</a></li>
             <li><a href="/login">{{ my_yaml.navbar.login }}</a></li>
             {% else %}
-            <li style="margin-top: 8px;"><button type="button" class="edit btn btn-danger pull-right">Edit</button></li>
+            <li style="margin-top: 8px;"><button type="button" class="edit btn btn-danger pull-right">{{ my_yaml.navbar.update_button }}</button></li>
             <li><a href="/logout">{{ my_yaml.navbar.logout }}</a></li>
             {% endif %}
           </ul>
@@ -51,9 +51,8 @@
       {% endblock content %}
     </div>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-    <script src={{ static('js/bootstrap.min.js') }}></script>
+    <script src="{{ static('js/bootstrap.min.js') }}"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
-    <script src={{ static('js/editor.js') }}></script>
-    <!-- {% if request.url %}{% endif %} -->
+    <script src="{{ static('js/editor.js') }}"></script>
   </body>
 </html>

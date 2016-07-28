@@ -3,13 +3,15 @@ navbar:
   login: Login
   logout: Logout
   home: Home
-  about: About
+  about: About Me
   register: Register
+  update_button: Editing
   dropdown:
     title: Updater
     start: Start App
     log: Log
-greeting: Welcome to YAMLUpdater
+
+greeting: Welcome to YAMLUpdate
 text1: lorem ipsum
 text2: this is some sample text
 log:

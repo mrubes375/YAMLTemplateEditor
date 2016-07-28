@@ -9,7 +9,8 @@ from re import search, compile, match
 from tempfile import NamedTemporaryFile
 import ruamel.yaml
 from github3 import login
-from collections import deque
+import pprint
+
 
 # class ExtendedFiles:
 #     def __init__(self, name):
@@ -54,13 +55,13 @@ class FileSearcher:
             searching = queue.pop()
             contents = open(searching, 'r').read()
             if "extends" in contents:
-                match = search(regex_pattern, contents).group()
-                queue.add(match)
-                if match in extends:
-                    extends[match].add(searching)
+                re_match = search(regex_pattern, contents).group()
+                queue.add(re_match)
+                if re_match in extends:
+                    extends[re_match].add(searching)
                 else:
-                    extends[match] = set()
-                    extends[match].add(searching)
+                    extends[re_match] = set()
+                    extends[re_match].add(searching)
             answer = (template in contents)
             if answer:
                 found.add(searching)
@@ -81,18 +82,38 @@ class FileSearcher:
 # print(x.files_changed)
 class DataBindingDOM:
     def __init__(self, template_dir, template):
+        self.template_name = template
         self.template_dir = template_dir
         os.chdir(template_dir)
         self.template_location = os.path.join(template_dir, template)
         self.text = open(self.template_location, 'r+').read()
-    def bind(self):
+    # def bind(self):
+    #     html = BeautifulSoup(self.text, "lxml")
+    #     for elem in html(text=compile(r'\{{(.*?)\}}')):
+    #         if 'my_yaml' in elem.parent.text:
+    #             element_match = match(r'\{{(.*?)\}}', elem.parent.text)
+    #             if element_match is not None:
+    #                 elem.parent['data'] = element_match.group(1).strip()
+    #     return str(html)
+    def bind(self, list_text=None):
+        if list_text is None:
+            list_text = []
         html = BeautifulSoup(self.text, "lxml")
+
+        regex_pattern = r'(?<=extends\s")([A-Za-z0-9_\./\\-]*)"'
+        find_extends = search(regex_pattern, self.text)
+        if find_extends is not None:
+            extended_temp = find_extends.group(0).strip('"')
+            extended = DataBindingDOM(self.template_dir, extended_temp)
+            extended_text = extended.bind()
+            list_text = list_text + extended_text
         for elem in html(text=compile(r'\{{(.*?)\}}')):
             if 'my_yaml' in elem.parent.text:
                 element_match = match(r'\{{(.*?)\}}', elem.parent.text)
                 if element_match is not None:
                     elem.parent['data'] = element_match.group(1).strip()
-        return str(html)
+        list_text.append((self.template_name, str(html)))
+        return list_text
 
 class ChangeYAML:
     def __init__(self, tag, new_context):
@@ -131,11 +152,19 @@ class GitCommitYaml:
     def __init__(self, username, password, tag):
         self.gitsession = login(username, password=password)
         self.repo = self.gitsession.repository(username, 'YAMLTemplateEditor')
-        sha = self.repo.create_blob('Update YAML', 'utf-8')
-        print(sha)
+        # sha = self.repo.create_blob('Update YAML', 'utf-8')
+        # print(sha)
         template_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'templates')
         os.chdir(template_dir)
         contents = open('master.yaml', 'rb')
         yaml = contents.read()
         contents.close()
-        self.repo.update_file('YAMLEditor/templates/master.yaml', 'Updated %s translation' % (tag), yaml, sha)
+        self.repo.contents('YAMLEditor/templates/master.yaml').update('Updated %s translation' % (tag), yaml)
+
+def nested_temp_file_extender(template):
+    template_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'templates')
+    html = DataBindingDOM(template_dir, page).bind()
+    rendered_file = NamedTemporaryFile(mode='r+', dir=template_dir)
+    rendered_file.write(html)
+    file_name = list(rendered_file.name.split('/'))[-1]
+    rendered_file.read()

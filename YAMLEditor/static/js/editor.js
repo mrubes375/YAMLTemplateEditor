@@ -17,7 +17,7 @@ function ChangeTemplateValue(tag, new_context) {
         message = alert('sent');
     },
     failure: function(data) {
-        message = alert('Got an error dude');
+        message = alert('File could not be updated right now.');
     },
     });
     return message;
