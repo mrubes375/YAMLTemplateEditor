@@ -6,8 +6,9 @@ import os
 from datetime import datetime
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework import viewsets
-from YAMLEditor.handle import ChangeYAML, FileSearcher
+from YAMLEditor.handle import ChangeYAML, FileSearcher, GitCommitYaml
 import json
+from YAMLEditor.secrets import git_pass, git_username
 # Create your views here.
 
 template_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'templates')
@@ -25,9 +26,10 @@ def ajax_context(request):
         user = request.user
         search = FileSearcher()
         files_changed = ', '.join(search.get_files_changed(tag))
+        commit = GitCommitYaml(git_username, git_pass, tag)
         change = Change(files_changed=files_changed, user=user, template=tag, old_context=old_context, new_context=new_context)
         change.save()
-        
+
         return HttpResponse(data)
     else:
         return render_with_yaml(request, 'errors/404.html')

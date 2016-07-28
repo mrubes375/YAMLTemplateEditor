@@ -20,6 +20,7 @@ from rest_framework import routers
 from .views import index, no_access, UserViewSet, register
 from update.views import ChangeViewSet
 import update.urls
+from django.contrib.auth.views import logout
 
 router = routers.DefaultRouter()
 router.register(r'change', ChangeViewSet)
@@ -35,5 +36,5 @@ urlpatterns = [
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     url(r'^', include(router.urls)),
     url(r'^no_access/$', no_access),
-    url(r'^logout/$', 'django.contrib.auth.views.logout', {'next_page': '/'})
+    url(r'^logout/$', logout, {'next_page': '/'})
 ]

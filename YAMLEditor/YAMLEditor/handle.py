@@ -8,7 +8,8 @@ from YAMLEditor.yaml_config import get_yaml
 from re import search, compile, match
 from tempfile import NamedTemporaryFile
 import ruamel.yaml
-from github3 import GitHub
+from github3 import login
+from collections import deque
 
 # class ExtendedFiles:
 #     def __init__(self, name):
@@ -121,10 +122,20 @@ class ChangeYAML:
             changed_key = access_keys.pop(0)
             old_context = yaml[changed_key]
             yaml[changed_key] = self.new_context
-        print(yaml)
         new_contents = ruamel.yaml.dump(yaml, Dumper=ruamel.yaml.RoundTripDumper)
-        print(new_contents)
         yaml_file = open("master.yaml", 'w+')
         yaml_file.write(new_contents)
         yaml_file.close()
         return old_context
+class GitCommitYaml:
+    def __init__(self, username, password, tag):
+        self.gitsession = login(username, password=password)
+        self.repo = self.gitsession.repository(username, 'YAMLTemplateEditor')
+        sha = self.repo.create_blob('Update YAML', 'utf-8')
+        print(sha)
+        template_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'templates')
+        os.chdir(template_dir)
+        contents = open('master.yaml', 'rb')
+        yaml = contents.read()
+        contents.close()
+        self.repo.update_file('YAMLEditor/templates/master.yaml', 'Updated %s translation' % (tag), yaml, sha)
