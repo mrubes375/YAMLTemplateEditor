@@ -23,12 +23,15 @@ def context_dict(request, context, function=get_yaml):
 
 def render_with_yaml(request, page, context={}):
     context=context_dict(request, context)
-    template_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'templates')
-    html = DataBindingDOM(template_dir, page).bind()
-    rendered_file = NamedTemporaryFile(mode='r+', dir=template_dir)
-    rendered_file.write(html)
-    file_name = list(rendered_file.name.split('/'))[-1]
-    print(rendered_file.read())
+    if request.user.is_staff:
+        template_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'templates')
+        html = DataBindingDOM(template_dir, page).bind()
+        rendered_file = NamedTemporaryFile(mode='r+', dir=template_dir)
+        rendered_file.write(html)
+        file_name = list(rendered_file.name.split('/'))[-1]
+        rendered_file.read()
+    else:
+        file_name = page
     return render(request, file_name, context)
 
 def c_render_to_response(template, request, status_code, context={}):

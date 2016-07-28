@@ -8,6 +8,7 @@ from YAMLEditor.yaml_config import get_yaml
 from re import search, compile, match
 from tempfile import NamedTemporaryFile
 import ruamel.yaml
+from github3 import GitHub
 
 # class ExtendedFiles:
 #     def __init__(self, name):
@@ -16,7 +17,7 @@ import ruamel.yaml
 #     def __str__(self):
 #         return "File: %s, Children: %s" % (self.file_name, self.children)
 
-class Handler:
+class FileSearcher:
     def __init__(self):
         self.template_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'templates')
         os.chdir(self.template_dir)
@@ -63,8 +64,15 @@ class Handler:
             if answer:
                 found.add(searching)
         for html in found:
-            found = found.union(extends[html])
+            try:
+                found = found.union(extends[html])
+            except KeyError:
+                found.add(html)
         self.files_changed = found
+    def get_files_changed(self, tag):
+        self.get_all_files()
+        self.search_files(tag)
+        return self.files_changed
 # x = Handler()
 # x.get_all_files()
 # x.search_files('my_yaml.navbar.name')
@@ -89,6 +97,7 @@ class ChangeYAML:
     def __init__(self, tag, new_context):
         self.tag = tag
         self.new_context = new_context
+        self.old_context = None
     def update(self):
         base = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         template_dir = os.path.join(base, 'templates')
@@ -99,14 +108,23 @@ class ChangeYAML:
         yaml = ruamel.yaml.load(contents, ruamel.yaml.RoundTripLoader)
         access_keys = self.tag.split('.')[1:]
         count = len(access_keys)
-        update = copy.copy(yaml)
-        while count>1:
-            key = access_keys.pop(0)
-            update = update[key]
-            count-=1
-        changed_key = access_keys.pop(0)
-        update[changed_key] = self.new_context
+        if count>1:
+            update = copy.copy(yaml)
+            while count!=1:
+                key = access_keys.pop(0)
+                update = update[key]
+                count-=1
+            changed_key = access_keys.pop(0)
+            old_context = update[changed_key]
+            update[changed_key] = self.new_context
+        elif count==1:
+            changed_key = access_keys.pop(0)
+            old_context = yaml[changed_key]
+            yaml[changed_key] = self.new_context
+        print(yaml)
         new_contents = ruamel.yaml.dump(yaml, Dumper=ruamel.yaml.RoundTripDumper)
+        print(new_contents)
         yaml_file = open("master.yaml", 'w+')
         yaml_file.write(new_contents)
         yaml_file.close()
+        return old_context

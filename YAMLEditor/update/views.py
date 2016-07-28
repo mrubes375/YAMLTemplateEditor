@@ -6,7 +6,7 @@ import os
 from datetime import datetime
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework import viewsets
-from YAMLEditor.handle import ChangeYAML
+from YAMLEditor.handle import ChangeYAML, FileSearcher
 import json
 # Create your views here.
 
@@ -21,11 +21,16 @@ def ajax_context(request):
         data = json.loads(request.body.decode('utf-8'))
         tag = data['tag'].strip()
         new_context = data['new_context'].strip()
-        ChangeYAML(tag, new_context).update()
-        message = data
+        old_context = ChangeYAML(tag, new_context).update()
+        user = request.user
+        search = FileSearcher()
+        files_changed = ', '.join(search.get_files_changed(tag))
+        change = Change(files_changed=files_changed, user=user, template=tag, old_context=old_context, new_context=new_context)
+        change.save()
+        
+        return HttpResponse(data)
     else:
-        message = "Nah"
-    return HttpResponse(message)
+        return render_with_yaml(request, 'errors/404.html')
 
 def admins_only(view):
     def _decorated(request, *args, **kwargs):
