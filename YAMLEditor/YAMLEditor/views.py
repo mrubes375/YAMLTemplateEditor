@@ -35,9 +35,8 @@ def render_with_yaml(request, page, context={}):
         template_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'templates')
         html = DataBindingDOM(template_dir, page).bind()
         if len(html)==2:
-            base_template = NamedTemporaryFile(mode='r+', dir=template_dir, suffix='.html', encoding='utf-8', delete=False)
+            base_template = NamedTemporaryFile(mode='r+', dir=template_dir, suffix='.html', encoding='utf-8', delete=True)
             base_template.write(html[0][1])
-            base_template.close()
             base_name = list(base_template.name.split('/'))[-1]
             rendered_file_text = html[1][1]
             rendered_file_text = rendered_file_text.replace(html[0][0], base_name)
@@ -47,9 +46,10 @@ def render_with_yaml(request, page, context={}):
             rendered_file_text = rendered_file_text.replace("</html>", "", 1)
             rendered_file_text = rendered_file_text.replace("<body>", "", 1)
             rendered_file_text = rendered_file_text.replace("</body>", "", 1)
-            rendered_file = NamedTemporaryFile(mode='r+', dir=template_dir, suffix='.html', encoding='utf-8', delete=False)
+            rendered_file = NamedTemporaryFile(mode='r+', dir=template_dir, suffix='.html', encoding='utf-8', delete=True)
             rendered_file.write(rendered_file_text)
-            rendered_file.close()
+            rendered_file.read()
+            base_template.read()
             file_name = list(rendered_file.name.split('/'))[-1]
     else:
         file_name = page

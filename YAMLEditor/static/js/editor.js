@@ -3,6 +3,14 @@ jQuery.fn.clickToggle = function(a,b) {
   return this.on("click", cb);
 };
 
+String.prototype.format = function () {
+  var i = 0, args = arguments;
+  return this.replace(/{}/g, function () {
+    return typeof args[i] != 'undefined' ? args[i++] : '';
+  });
+};
+
+
 function ChangeTemplateValue(tag, new_context) {
     var message;
     $.ajax({
@@ -14,7 +22,7 @@ function ChangeTemplateValue(tag, new_context) {
     }),
     contentType: "application/json; charset=utf-8",
     success: function(data) {
-        message = alert('sent');
+        message = alert('{} translation has been updated'.format(tag));
     },
     failure: function(data) {
         message = alert('File could not be updated right now.');
@@ -25,10 +33,9 @@ function ChangeTemplateValue(tag, new_context) {
 
 $(document).ready(function (){
     $("button.edit").clickToggle(function() {
-        // $("body *").not("script").attr('contentEditable', 'true').addClass('editable');
         var editables = $('[data]');
+        $('a').not('.dropdown-toggle').prop('disabled', true);
         editables.attr('contentEditable', 'true');
-
         editables.click(function(event){
             var tag = $(event.target).attr('data');
             $(this).keyup(function(event){
@@ -38,12 +45,14 @@ $(document).ready(function (){
                 };
             })
         });
-
         $(this).removeClass('btn-danger').addClass('btn-success');
+        $(this).after('<h6 class="howtoSave" style="margin-top: 5px; margin-right: 10px; line-height: 1.4;">Press <kbd><kbd>ctrl</kbd> + <kbd>s</kbd></kbd> to save change</h6>');
     },
     function() {
         $("body *").removeAttr('contentEditable').removeClass('editable');
+        $('a').not('.dropdown-toggle').prop('disabled', false);
         $(this).removeClass('btn-success').addClass('btn-danger');
+        $('.howtoSave').remove();
     });
 
 });
