@@ -22,7 +22,7 @@ log:
     user: User
     template: Template
 updater:
-  date: Date Changed
+  date: Date Modified
   files_changed: Files Changed
   user: Admin Username
   template: Template
