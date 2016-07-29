@@ -22,9 +22,9 @@ log:
     user: User
     template: Template
 updater:
-  date: Date Modified
+  date: User
   files_changed: Files Changed
-  user: Admin Username
+  user: User
   template: Template
   old_context: Old Context
   new_context: New Context
