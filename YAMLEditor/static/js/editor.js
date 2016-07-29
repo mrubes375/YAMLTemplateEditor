@@ -10,6 +10,8 @@ String.prototype.format = function () {
   });
 };
 
+$.fn.editable.defaults.mode = 'inline';
+
 
 function ChangeTemplateValue(tag, new_context) {
     var message;
@@ -31,28 +33,39 @@ function ChangeTemplateValue(tag, new_context) {
     return message;
 };
 
+var editables = $('[data]');
+
 $(document).ready(function (){
     $("button.edit").clickToggle(function() {
-        var editables = $('[data]');
-        $('a').not('.dropdown-toggle').prop('disabled', true);
-        editables.attr('contentEditable', 'true');
-        editables.click(function(event){
-            var tag = $(event.target).attr('data');
-            $(this).keyup(function(event){
-                if (event.ctrlKey && event.which==83 ) {
-                    var new_context = $(event.target).text();
-                    ChangeTemplateValue(tag, new_context);
-                };
-            })
-        });
+        // // $('a').not('.dropdown-toggle').prop('disabled', true);
+        // editables.attr('contentEditable', 'true');
+        // editables.click(function(event){
+        //     var tag = $(event.target).last().attr('data');
+        //     $(this).keyup(function(event){
+        //         if (event.ctrlKey && event.which==83 ) {
+        //             var new_context = $(event.target).last().text();
+        //             // ChangeTemplateValue(tag, new_context);
+        //             console.log(this)
+        //         };
+        //     })
+        // });
+        editables.editable();
+        editables.on('init', function(event, editable){
+            console.log(event);
+            console.log(editable);
+        })
+        editables.on('save', function(){
+            console.log($(this).data('editable'));
+        })
         $(this).removeClass('btn-danger').addClass('btn-success');
         $(this).after('<h6 class="howtoSave" style="margin-top: 5px; margin-right: 10px; line-height: 1.4;">Press <kbd><kbd>ctrl</kbd> + <kbd>s</kbd></kbd> to save change</h6>');
     },
     function() {
         $("body *").removeAttr('contentEditable').removeClass('editable');
-        $('a').not('.dropdown-toggle').prop('disabled', false);
+        // $('a').not('.dropdown-toggle').prop('disabled', false);
         $(this).removeClass('btn-success').addClass('btn-danger');
         $('.howtoSave').remove();
+        editables.editable('destroy');
     });
 
 });
