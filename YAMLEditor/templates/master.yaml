@@ -24,7 +24,7 @@ log:
 updater:
   date: Date Changed
   files_changed: Files Changed
-  user: User
+  user: Admin Username
   template: Template
   old_context: Old Context
   new_context: New Context
