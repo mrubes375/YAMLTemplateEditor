@@ -17,7 +17,7 @@ function ChangeTemplateValue(tag, new_context) {
     var message;
     $.ajax({
     url: 'http://localhost:8000/update/context/',
-    type: 'POST', // This is the default though, you don't actually need to always mention it
+    type: 'POST', 
     data: JSON.stringify({
         tag: tag,
         new_context: new_context,
@@ -37,18 +37,6 @@ var editables = $('[data]');
 
 $(document).ready(function (){
     $("button.edit").clickToggle(function() {
-        // // $('a').not('.dropdown-toggle').prop('disabled', true);
-        // editables.attr('contentEditable', 'true');
-        // editables.click(function(event){
-        //     var tag = $(event.target).last().attr('data');
-        //     $(this).keyup(function(event){
-        //         if (event.ctrlKey && event.which==83 ) {
-        //             var new_context = $(event.target).last().text();
-        //             // ChangeTemplateValue(tag, new_context);
-        //             console.log(this)
-        //         };
-        //     })
-        // });
         editables.editable();
         editables.on('save', function(e, editable){
             var new_context = editable.newValue;
@@ -56,11 +44,10 @@ $(document).ready(function (){
             ChangeTemplateValue(tag, new_context);
         })
         $(this).removeClass('btn-danger').addClass('btn-success');
-        // $(this).after('<h6 class="howtoSave" style="margin-top: 5px; margin-right: 10px; line-height: 1.4;">Press <kbd><kbd>ctrl</kbd> + <kbd>s</kbd></kbd> to save change</h6>');
+
     },
     function() {
         $("body *").removeAttr('contentEditable').removeClass('editable');
-        // $('a').not('.dropdown-toggle').prop('disabled', false);
         $(this).removeClass('btn-success').addClass('btn-danger');
         $('.howtoSave').remove();
         editables.editable('destroy');

@@ -11,14 +11,6 @@ import ruamel.yaml
 from github3 import login
 import pprint
 
-
-# class ExtendedFiles:
-#     def __init__(self, name):
-#         self.file_name = name
-#         self.children = []
-#     def __str__(self):
-#         return "File: %s, Children: %s" % (self.file_name, self.children)
-
 class FileSearcher:
     def __init__(self):
         self.template_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'templates')
@@ -75,11 +67,7 @@ class FileSearcher:
         self.get_all_files()
         self.search_files(tag)
         return self.files_changed
-# x = Handler()
-# x.get_all_files()
-# x.search_files('my_yaml.navbar.name')
-# print(x.all_files)
-# print(x.files_changed)
+
 class DataBindingDOM:
     def __init__(self, template_dir, template, template_type=None):
         if template_type is not None:
@@ -160,21 +148,13 @@ class ChangeYAML:
             old_context = yaml[changed_key]
             yaml[changed_key] = self.new_context
         new_contents = ruamel.yaml.dump(yaml, Dumper=ruamel.yaml.RoundTripDumper)
-        # yaml_file = open("master.yaml", 'w+')
-        # yaml_file.write(new_contents)
-        # yaml_file.close()
         return (old_context, new_contents)
 class GitCommitYaml:
     def __init__(self, username, password, tag, new_contents):
         self.gitsession = login(username, password=password)
         self.repo = self.gitsession.repository(username, 'YAMLTemplateEditor')
-        # sha = self.repo.create_blob('Update YAML', 'utf-8')
-        # print(sha)
         template_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'templates')
         os.chdir(template_dir)
-        # contents = open('master.yaml', 'rb')
-        # yaml = contents.read()
-        # contents.close()
         self.repo.contents('YAMLEditor/templates/master.yaml').update('Updated %s translation' % (tag), new_contents)
 
 def nested_temp_file_extender(template_list):

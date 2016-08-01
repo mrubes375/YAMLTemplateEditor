@@ -9,7 +9,6 @@ from rest_framework import viewsets
 from YAMLEditor.handle import ChangeYAML, FileSearcher, GitCommitYaml
 import json
 from YAMLEditor.secrets import git_pass, git_username
-# Create your views here.
 
 template_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'templates')
 class ChangeViewSet(viewsets.ModelViewSet):
@@ -56,7 +55,3 @@ def log_details(request, id):
 def app(request):
     print(request.META)
     return HttpResponse('hi')
-
-class Update:
-    def __init__():
-        pass
