@@ -81,38 +81,54 @@ class FileSearcher:
 # print(x.all_files)
 # print(x.files_changed)
 class DataBindingDOM:
-    def __init__(self, template_dir, template):
+    def __init__(self, template_dir, template, template_type=None):
+        if template_type is not None:
+            self.template_type = template_type
+        else:
+            self.template_type = 'base'
         self.template_name = template
         self.template_dir = template_dir
         os.chdir(template_dir)
         self.template_location = os.path.join(template_dir, template)
         self.text = open(self.template_location, 'r+').read()
-    # def bind(self):
-    #     html = BeautifulSoup(self.text, "lxml")
-    #     for elem in html(text=compile(r'\{{(.*?)\}}')):
-    #         if 'my_yaml' in elem.parent.text:
-    #             element_match = match(r'\{{(.*?)\}}', elem.parent.text)
-    #             if element_match is not None:
-    #                 elem.parent['data'] = element_match.group(1).strip()
-    #     return str(html)
     def bind(self, list_text=None):
         if list_text is None:
             list_text = []
         html = BeautifulSoup(self.text, "lxml")
-
-        regex_pattern = r'(?<=extends\s")([A-Za-z0-9_\./\\-]*)"'
-        find_extends = search(regex_pattern, self.text)
+        template_type = 'base'
+        extends_regex_pattern = r'(?<=extends\s")([A-Za-z0-9_\./\\-]*)"'
+        find_extends = search(extends_regex_pattern, self.text)
         if find_extends is not None:
             extended_temp = find_extends.group(0).strip('"')
-            extended = DataBindingDOM(self.template_dir, extended_temp)
+            extended = DataBindingDOM(self.template_dir, extended_temp, 'extend')
             extended_text = extended.bind()
             list_text = list_text + extended_text
+        include_regex_pattern  = r'(?<=include\s")([A-Za-z0-9_\./\\-]*)"'
+        find_include = search(include_regex_pattern, self.text)
+        if find_include is not None:
+            i = 1
+            group = None
+            try:
+                group = find_include.group(i)
+            except IndexError:
+                pass
+            while group is not None:
+                include_temp = find_include.group(i).strip('"')
+                included = DataBindingDOM(self.template_dir, include_temp, 'include')
+                include_text = included.bind()
+                list_text = list_text + include_text
+                i+=1
+                try:
+                    group = find_include.group(i)
+                except IndexError:
+                    group = None
+                    break
         for elem in html(text=compile(r'\{{(.*?)\}}')):
             if 'my_yaml' in elem.parent.text:
                 element_match = match(r'\{{(.*?)\}}', elem.parent.text)
                 if element_match is not None:
                     elem.parent['data'] = element_match.group(1).strip()
-        list_text.append((self.template_name, str(html)))
+        list_text.append([self.template_type, self.template_name, str(html)])
         return list_text
 
 class ChangeYAML:
@@ -161,10 +177,25 @@ class GitCommitYaml:
         contents.close()
         self.repo.contents('YAMLEditor/templates/master.yaml').update('Updated %s translation' % (tag), yaml)
 
-def nested_temp_file_extender(template):
+def nested_temp_file_extender(template_list):
+    temp_files = []
     template_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'templates')
-    html = DataBindingDOM(template_dir, page).bind()
-    rendered_file = NamedTemporaryFile(mode='r+', dir=template_dir)
-    rendered_file.write(html)
+    base = template_list.pop()
+    base_text = base[2]
+    base_text = base_text.replace("<p>", "", 1).replace("</p>", "", 1).replace("<html>", "", 1).replace("</html>", "", 1).replace("<body>", "", 1).replace("</body>", "", 1)
+    while len(template_list)!=0:
+        popped_template = template_list.pop()
+        if popped_template[0]=='include':
+            popped_template[2] = popped_template[2].replace("<html>", "", 1).replace("</html>", "", 1).replace("<body>", "", 1).replace("</body>", "", 1)
+        rendered_file = NamedTemporaryFile(mode='r+', dir=template_dir, suffix='.html')
+        rendered_file.write(popped_template[2])
+        file_name = list(rendered_file.name.split('/'))[-1]
+        base_text = base_text.replace(popped_template[1], file_name)
+        rendered_file.read()
+        temp_files.append(rendered_file)
+    rendered_file = NamedTemporaryFile(mode='r+', dir=template_dir, suffix='.html')
+    rendered_file.write(base_text)
     file_name = list(rendered_file.name.split('/'))[-1]
     rendered_file.read()
+    temp_files.append(rendered_file)
+    return (file_name, temp_files)

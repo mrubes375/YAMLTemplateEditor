@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 from .serializers import UserSerializer
 from .forms import RegisterForm
 from tempfile import NamedTemporaryFile
-from .handle import DataBindingDOM
+from .handle import DataBindingDOM, nested_temp_file_extender
 import os
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -26,31 +26,10 @@ def render_tempfiles_assist(request, page, context={}):
 def render_with_yaml(request, page, context={}):
     context=context_dict(request, context)
     if request.user.is_staff:
-        # template_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'templates')
-        # html = DataBindingDOM(template_dir, page).bind()
-        # rendered_file = NamedTemporaryFile(mode='r+', dir=template_dir)
-        # rendered_file.write(html)
-        # file_name = list(rendered_file.name.split('/'))[-1]
-        # rendered_file.read()
         template_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'templates')
         html = DataBindingDOM(template_dir, page).bind()
-        if len(html)==2:
-            base_template = NamedTemporaryFile(mode='r+', dir=template_dir, suffix='.html', encoding='utf-8', delete=True)
-            base_template.write(html[0][1])
-            base_name = list(base_template.name.split('/'))[-1]
-            rendered_file_text = html[1][1]
-            rendered_file_text = rendered_file_text.replace(html[0][0], base_name)
-            rendered_file_text = rendered_file_text.replace("<p>", "", 1)
-            rendered_file_text = rendered_file_text.replace("</p>", "", 1)
-            rendered_file_text = rendered_file_text.replace("<html>", "", 1)
-            rendered_file_text = rendered_file_text.replace("</html>", "", 1)
-            rendered_file_text = rendered_file_text.replace("<body>", "", 1)
-            rendered_file_text = rendered_file_text.replace("</body>", "", 1)
-            rendered_file = NamedTemporaryFile(mode='r+', dir=template_dir, suffix='.html', encoding='utf-8', delete=True)
-            rendered_file.write(rendered_file_text)
-            rendered_file.read()
-            base_template.read()
-            file_name = list(rendered_file.name.split('/'))[-1]
+        temp_files = nested_temp_file_extender(html)
+        file_name = temp_files[0]
     else:
         file_name = page
     return render(request, file_name, context)
