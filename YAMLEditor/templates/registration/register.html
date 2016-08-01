@@ -3,9 +3,9 @@
 {% block content %}
 
 {% if form.errors %}
-<p>Login credentials not validated. Please try again.</p>
+<p>Invalid Registration Form</p>
 {% endif %}
-<form action="/user/" method="post">
+<form action="/register/" method="post">
     <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
     <div class="container">
       {{ form.first_name.errors }}

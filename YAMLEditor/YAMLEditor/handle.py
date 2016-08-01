@@ -9,7 +9,6 @@ from re import search, compile, match
 from tempfile import NamedTemporaryFile
 import ruamel.yaml
 from github3 import login
-import pprint
 
 class FileSearcher:
     def __init__(self):
@@ -38,7 +37,7 @@ class FileSearcher:
                 for additional_file in os.listdir():
                     queue.append(checking+'/'+additional_file)
         os.chdir(self.template_dir)
-    def search_files(self, template):
+    def search_extend(self, template):
         regex_pattern = '(?<=extends\s").*l'
         queue = set(copy.copy(self.all_files))
         extends = dict()
@@ -62,7 +61,36 @@ class FileSearcher:
                 found = found.union(extends[html])
             except KeyError:
                 found.add(html)
-        self.files_changed = found
+        return found
+    def search_include(self, template):
+        regex_pattern = '(?<=include\s").*l'
+        queue = set(copy.copy(self.all_files))
+        includes = dict()
+        found = set()
+        while len(queue)>0:
+            searching = queue.pop()
+            contents = open(searching, 'r').read()
+            if "include" in contents:
+                re_match = search(regex_pattern, contents).group()
+                queue.add(re_match)
+                if re_match in includes:
+                    includes[re_match].add(searching)
+                else:
+                    includes[re_match] = set()
+                    includes[re_match].add(searching)
+            answer = (template in contents)
+            if answer:
+                found.add(searching)
+        for html in found:
+            try:
+                found = found.union(includes[html])
+            except KeyError:
+                found.add(html)
+        return found
+    def search_files(self, template):
+        extends = self.search_extend(template)
+        include = self.search_include(template)
+        self.files_changed = extends.union(include)
     def get_files_changed(self, tag):
         self.get_all_files()
         self.search_files(tag)

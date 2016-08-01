@@ -30,7 +30,7 @@ handler500 = 'YAMLEditor.views.server_error'
 
 urlpatterns = [
     url(r'^$', index),
-    url(r'^register/$', register, name='register'),
+    url(r'^register/$', register),
     url(r'^admin/', admin.site.urls),
     url(r'^update/', include(update.urls)),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),

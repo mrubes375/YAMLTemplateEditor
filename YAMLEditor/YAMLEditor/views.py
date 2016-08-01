@@ -44,10 +44,18 @@ def index(request):
     return render_with_yaml(request, 'index.html')
 
 def register(request):
+    if request.user.is_authenticated():
+        return HttpResponseRedirect('/')
     if request.method == 'POST':
         form = RegisterForm(request.POST)
         if form.is_valid():
-            form.save()
+            user = form.save()
+            user.set_password(request.POST['password'])
+            user.save()
+            form = RegisterForm()
+            new_user = authenticate(username=request.POST['username'], password=request.POST['password'])
+            new_user.backend = 'django.contrib.auth.backends.ModelBackend'
+            login(request, new_user)
             return HttpResponseRedirect('/')
     else:
         form = RegisterForm()

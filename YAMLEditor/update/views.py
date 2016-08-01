@@ -15,7 +15,7 @@ class ChangeViewSet(viewsets.ModelViewSet):
     queryset = Change.objects.all().order_by('-date')
     serializer_class = ChangeSerializer
 
-@csrf_exempt
+# @csrf_exempt
 def ajax_context(request):
     if request.is_ajax():
         data = json.loads(request.body.decode('utf-8'))
@@ -37,7 +37,6 @@ def ajax_context(request):
 def admins_only(view):
     def _decorated(request, *args, **kwargs):
         if not request.user.is_staff:
-            injected_template = some_function('no_access.html')
             return render_with_yaml(request, 'no_access.html')
         return view(request, *args, **kwargs)
     return _decorated

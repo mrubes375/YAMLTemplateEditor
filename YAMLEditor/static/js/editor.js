@@ -10,6 +10,34 @@ String.prototype.format = function () {
   });
 };
 
+function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = jQuery.trim(cookies[i]);
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+};
+
+function csrfSafeMethod(method) {
+    // these HTTP methods do not require CSRF protection
+    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+}
+$.ajaxSetup({
+    beforeSend: function(xhr, settings) {
+        if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+            xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+        }
+    }
+});
+
 $.fn.editable.defaults.mode = 'inline';
 
 
@@ -17,8 +45,9 @@ function ChangeTemplateValue(tag, new_context) {
     var message;
     $.ajax({
     url: 'http://localhost:8000/update/context/',
-    type: 'POST', 
+    type: 'POST',
     data: JSON.stringify({
+        CSRF: getCookie('csrftoken'),
         tag: tag,
         new_context: new_context,
     }),
@@ -41,6 +70,7 @@ $(document).ready(function (){
         editables.on('save', function(e, editable){
             var new_context = editable.newValue;
             var tag = $(this).attr('data');
+            console.log(getCookie('csrftoken'));
             ChangeTemplateValue(tag, new_context);
         })
         $(this).removeClass('btn-danger').addClass('btn-success');
