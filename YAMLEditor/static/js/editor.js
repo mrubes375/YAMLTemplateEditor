@@ -53,9 +53,8 @@ $(document).ready(function (){
         editables.on('save', function(e, editable){
             var new_context = editable.newValue;
             var tag = $(this).attr('data');
-            // ChangeTemplateValue(tag, new_context);
-            console.log(new_context, tag);
-            })
+            ChangeTemplateValue(tag, new_context);
+        })
         $(this).removeClass('btn-danger').addClass('btn-success');
         // $(this).after('<h6 class="howtoSave" style="margin-top: 5px; margin-right: 10px; line-height: 1.4;">Press <kbd><kbd>ctrl</kbd> + <kbd>s</kbd></kbd> to save change</h6>');
     },
