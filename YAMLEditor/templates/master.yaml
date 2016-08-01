@@ -11,7 +11,7 @@ navbar:
     start: Start App
     log: Log
 greeting: Welcome to YAMLUpdater
-text1: lorem ipsum
+text1: lorem ipsums
 text2: this is some sample text
 log:
   title: Log
