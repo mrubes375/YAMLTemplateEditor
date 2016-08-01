@@ -11,7 +11,7 @@ navbar:
     start: Start App
     log: Log
 greeting: Welcome to YAMLUpdater
-text1: lorem ipsums
+text1: lorem ipsum
 text2: this is some sample text
 log:
   title: Log
@@ -22,7 +22,7 @@ log:
     template: Template
 updater:
   date: Date Modified
-  files_changed: Files Changed
+  files_changed: File(s) Changed
   user: User
   template: Tag
   old_context: Old Context
