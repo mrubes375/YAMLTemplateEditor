@@ -70,7 +70,6 @@ $(document).ready(function (){
         editables.on('save', function(e, editable){
             var new_context = editable.newValue;
             var tag = $(this).attr('data');
-            console.log(getCookie('csrftoken'));
             ChangeTemplateValue(tag, new_context);
         })
         $(this).removeClass('btn-danger').addClass('btn-success');
