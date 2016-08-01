@@ -50,15 +50,14 @@ $(document).ready(function (){
         //     })
         // });
         editables.editable();
-        editables.on('init', function(event, editable){
-            console.log(event);
-            console.log(editable);
-        })
-        editables.on('save', function(){
-            console.log($(this).data('editable'));
-        })
+        editables.on('save', function(e, editable){
+            var new_context = editable.newValue;
+            var tag = $(this).attr('data');
+            // ChangeTemplateValue(tag, new_context);
+            console.log(new_context, tag);
+            })
         $(this).removeClass('btn-danger').addClass('btn-success');
-        $(this).after('<h6 class="howtoSave" style="margin-top: 5px; margin-right: 10px; line-height: 1.4;">Press <kbd><kbd>ctrl</kbd> + <kbd>s</kbd></kbd> to save change</h6>');
+        // $(this).after('<h6 class="howtoSave" style="margin-top: 5px; margin-right: 10px; line-height: 1.4;">Press <kbd><kbd>ctrl</kbd> + <kbd>s</kbd></kbd> to save change</h6>');
     },
     function() {
         $("body *").removeAttr('contentEditable').removeClass('editable');
