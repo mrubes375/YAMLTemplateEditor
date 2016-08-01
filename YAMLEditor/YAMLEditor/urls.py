@@ -17,7 +17,7 @@ Including another URLconf
 from django.conf.urls import url, include, handler404, handler500
 from django.contrib import admin
 from rest_framework import routers
-from .views import index, no_access, UserViewSet, register
+from .views import index, no_access, UserViewSet, register, user_login, about
 from update.views import ChangeViewSet
 import update.urls
 from django.contrib.auth.views import logout
@@ -31,6 +31,8 @@ handler500 = 'YAMLEditor.views.server_error'
 urlpatterns = [
     url(r'^$', index),
     url(r'^register/$', register),
+    url(r'^login/$', user_login),
+    url(r'^about/$', about),
     url(r'^admin/', admin.site.urls),
     url(r'^update/', include(update.urls)),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),

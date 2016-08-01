@@ -11,3 +11,11 @@ class RegisterForm(ModelForm):
             'email',
             'username',
         ]
+
+class LoginForm(ModelForm):
+    password = CharField(widget=PasswordInput())
+    class Meta:
+        model = User
+        fields = [
+            'username'
+        ]

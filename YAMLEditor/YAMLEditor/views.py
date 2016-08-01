@@ -4,7 +4,7 @@ from .yaml_config import get_yaml
 from rest_framework import viewsets, permissions
 from django.contrib.auth.models import User
 from .serializers import UserSerializer
-from .forms import RegisterForm
+from .forms import RegisterForm, LoginForm
 from tempfile import NamedTemporaryFile
 from .handle import DataBindingDOM, nested_temp_file_extender
 import os
@@ -52,7 +52,6 @@ def register(request):
             user = form.save()
             user.set_password(request.POST['password'])
             user.save()
-            form = RegisterForm()
             new_user = authenticate(username=request.POST['username'], password=request.POST['password'])
             new_user.backend = 'django.contrib.auth.backends.ModelBackend'
             login(request, new_user)
@@ -61,6 +60,20 @@ def register(request):
         form = RegisterForm()
     return render_with_yaml(request, 'registration/register.html', {'form': form})
 
+def user_login(request):
+    if request.user.is_authenticated():
+        return HttpResponseRedirect('/')
+    if request.method == 'POST':
+        form = LoginForm(request.POST)
+        user = authenticate(username=request.POST['username'], password=request.POST['password'])
+        login(request, user)
+        return HttpResponseRedirect('/')
+    else:
+        form = LoginForm()
+    return render_with_yaml(request, 'registration/login.html', {'form': form})
+
+def about(request):
+    return render_with_yaml(request, 'about.html')
 
 def not_found(request):
     return render_with_yaml(request, 'errors/404.html')
