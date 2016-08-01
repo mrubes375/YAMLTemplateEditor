@@ -25,7 +25,7 @@ updater:
   date: Date Modified
   files_changed: Files Changed
   user: User
-  template: Template
+  template: Tag
   old_context: Old Context
   new_context: New Context
 response:
