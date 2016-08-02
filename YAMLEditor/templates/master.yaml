@@ -12,7 +12,7 @@ navbar:
     log: Log
 about: Created by Matthew Rubenstein
 greeting: Welcome to YAMLUpdater
-text1: lorem ipsum
+text1: ipsum
 text2: this is some sample text
 log:
   title: Log
@@ -22,7 +22,7 @@ log:
     user: User
     template: Template
 updater:
-  date: Date Modified
+  date: Date Changed
   files_changed: Files Changed
   user: User
   template: Tag
