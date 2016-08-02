@@ -89,25 +89,19 @@ class DataBindingDOM:
         if list_text is None:
             list_text = []
         html = BeautifulSoup(self.text, "lxml")
-        template_type = 'base'
-        extends_regex_pattern = r'(?<=extends\s")([A-Za-z0-9_\./\\-]*)'
-        find_extends = search(extends_regex_pattern, self.text)
+        find_extends = HTMLTemplate(self.text).tag_search('extends')
         if find_extends is not None:
-            extended_temp = find_extends.group(0).strip('"')
+            extended_temp = find_extends.group(0)
             extended = DataBindingDOM(self.template_dir, extended_temp, 'extend')
             extended_text = extended.bind()
             list_text = list_text + extended_text
-        include_regex_pattern  = r'(?<=include\s")([A-Za-z0-9_\./\\-]*)'
-        find_include = search(include_regex_pattern, self.text)
+        find_include = HTMLTemplate(self.text).tag_search('include')
         if find_include is not None:
-            i = 1
-            group = None
-            try:
-                group = find_include.group(i)
-            except IndexError:
-                pass
+            print(find_include.group(0), find_include.group(1))
+            i = 0
+            group = find_include.group(i)
             while group is not None:
-                include_temp = find_include.group(i).strip('"')
+                include_temp = find_include.group(i)
                 included = DataBindingDOM(self.template_dir, include_temp, 'include')
                 include_text = included.bind()
                 list_text = list_text + include_text
@@ -165,17 +159,22 @@ class GitCommitYaml:
         self.repo.contents('YAMLEditor/templates/master.yaml').update('Updated %s translation' % (tag), new_contents)
 
 
-class HTMLTemplateTagStripper:
-    def __init__(self, text, template_type):
+class HTMLTemplate:
+    def __init__(self, text, template_type=None):
         self.text = text
-        self.template_type = template_type
-    def strip(self):
+        if template_type is not None:
+            self.template_type = template_type
+        else: self.template_type = None
+    def tag_stripper(self):
         if self.template_type=='include':
             return self.text.replace("<html>", "", 1).replace("</html>", "", 1).replace("<body>", "", 1).replace("</body>", "", 1)
         elif self.template_type=='base':
             return self.text.replace("<p>", "", 1).replace("</p>", "", 1).replace("<html>", "", 1).replace("</html>", "", 1).replace("<body>", "", 1).replace("</body>", "", 1)
         elif self.template_type=='extend':
             return self.text
+    def tag_search(self, tag):
+        regex_pattern = r'(?<=' + tag + '\s")([A-Za-z0-9_\./\\-]*)'
+        return search(regex_pattern, self.text)
 
 def nested_temp_file_extender(template_list):
     temp_files = []
@@ -183,9 +182,9 @@ def nested_temp_file_extender(template_list):
     while len(template_list)!=0:
         popped_template = template_list.pop()
         if popped_template[0]=='base':
-            base_text = HTMLTemplateTagStripper(popped_template[2], popped_template[0]).strip()
+            base_text = HTMLTemplate(popped_template[2], popped_template[0]).tag_stripper()
         rendered_file = NamedTemporaryFile(mode='r+', dir=template_dir, suffix='.html')
-        rendered_file.write(HTMLTemplateTagStripper(popped_template[2], popped_template[0]).strip())
+        rendered_file.write(HTMLTemplate(popped_template[2], popped_template[0]).tag_stripper())
         file_name = list(rendered_file.name.split('/'))[-1]
         base_text = base_text.replace(popped_template[1], file_name)
         rendered_file.read()
