@@ -5,7 +5,7 @@ import copy
 from bs4 import BeautifulSoup
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from YAMLEditor.yaml_config import get_yaml
-from re import search, compile, match
+from re import search, compile, match, findall
 from tempfile import NamedTemporaryFile
 import ruamel.yaml
 from github3 import login
@@ -89,15 +89,16 @@ class DataBindingDOM:
         if list_text is None:
             list_text = []
         html = BeautifulSoup(self.text, "lxml")
-        find_extends = HTMLTemplate(self.text).tag_search('extends')
+        find_extends = HTMLTemplate(self.text, 'extend').tag_search()
+        print(find_extends)
         if find_extends is not None:
             extended_temp = find_extends.group(0)
             extended = DataBindingDOM(self.template_dir, extended_temp, 'extend')
             extended_text = extended.bind()
             list_text = list_text + extended_text
-        find_include = HTMLTemplate(self.text).tag_search('include')
+        find_include = HTMLTemplate(self.text, 'include').tag_search()
+        print(find_include)
         if find_include is not None:
-            print(find_include.group(0), find_include.group(1))
             i = 0
             group = find_include.group(i)
             while group is not None:
@@ -172,8 +173,8 @@ class HTMLTemplate:
             return self.text.replace("<p>", "", 1).replace("</p>", "", 1).replace("<html>", "", 1).replace("</html>", "", 1).replace("<body>", "", 1).replace("</body>", "", 1)
         elif self.template_type=='extend':
             return self.text
-    def tag_search(self, tag):
-        regex_pattern = r'(?<=' + tag + '\s")([A-Za-z0-9_\./\\-]*)'
+    def tag_search(self):
+        regex_pattern = r'(?<=' + self.template_type + '\s")([A-Za-z0-9_\./\\-]*)'
         return search(regex_pattern, self.text)
 
 def nested_temp_file_extender(template_list):
