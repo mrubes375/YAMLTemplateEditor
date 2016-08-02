@@ -11,46 +11,47 @@ class UserViewSet(viewsets.ModelViewSet):
     permission_clases = (permissions.IsAdminUser,)
     serializer_class = UserSerializer
 
-def index(request):
-    return render_with_yaml(request, 'index.html')
+class CoreApp:
+    def index(request):
+        return render_with_yaml(request, 'index.html')
 
-def register(request):
-    if request.user.is_authenticated():
-        return HttpResponseRedirect('/')
-    if request.method == 'POST':
-        form = RegisterForm(request.POST)
-        if form.is_valid():
-            user = form.save()
-            user.set_password(request.POST['password'])
-            user.save()
-            new_user = authenticate(username=request.POST['username'], password=request.POST['password'])
-            new_user.backend = 'django.contrib.auth.backends.ModelBackend'
-            login(request, new_user)
+    def register(request):
+        if request.user.is_authenticated():
             return HttpResponseRedirect('/')
-    else:
-        form = RegisterForm()
-    return render_with_yaml(request, 'registration/register.html', {'form': form})
+        if request.method == 'POST':
+            form = RegisterForm(request.POST)
+            if form.is_valid():
+                user = form.save()
+                user.set_password(request.POST['password'])
+                user.save()
+                new_user = authenticate(username=request.POST['username'], password=request.POST['password'])
+                new_user.backend = 'django.contrib.auth.backends.ModelBackend'
+                login(request, new_user)
+                return HttpResponseRedirect('/')
+        else:
+            form = RegisterForm()
+        return render_with_yaml(request, 'registration/register.html', {'form': form})
 
-def user_login(request):
-    if request.user.is_authenticated():
-        return HttpResponseRedirect('/')
-    if request.method == 'POST':
-        form = LoginForm(request.POST)
-        user = authenticate(username=request.POST['username'], password=request.POST['password'])
-        login(request, user)
-        return HttpResponseRedirect('/')
-    else:
-        form = LoginForm()
-    return render_with_yaml(request, 'registration/login.html', {'form': form})
+    def user_login(request):
+        if request.user.is_authenticated():
+            return HttpResponseRedirect('/')
+        if request.method == 'POST':
+            form = LoginForm(request.POST)
+            user = authenticate(username=request.POST['username'], password=request.POST['password'])
+            login(request, user)
+            return HttpResponseRedirect('/')
+        else:
+            form = LoginForm()
+        return render_with_yaml(request, 'registration/login.html', {'form': form})
 
-def about(request):
-    return render_with_yaml(request, 'about.html')
+    def about(request):
+        return render_with_yaml(request, 'about.html')
 
-def not_found(request):
-    return render_with_yaml(request, 'errors/404.html')
+    def not_found(request):
+        return render_with_yaml(request, 'errors/404.html')
 
-def server_error(request):
-    return render_with_yaml(request, 'errors/500.html')
+    def server_error(request):
+        return render_with_yaml(request, 'errors/500.html')
 
-def no_access(request):
-    return render_with_yaml(request, 'no_access.html')
+    def no_access(request):
+        return render_with_yaml(request, 'no_access.html')

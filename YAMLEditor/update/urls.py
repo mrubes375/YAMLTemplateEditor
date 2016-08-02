@@ -1,9 +1,9 @@
 from django.conf.urls import url, include
-from .views import *
+from .views import ChangeApp
 
 urlpatterns = [
-    url(r'^log/$', log),
-    url(r'^(?P<id>[0-9]+)/$', log_details),
-    url(r'^context/$', ajax_context)
+    url(r'^log/$', ChangeApp.log),
+    url(r'^(?P<id>[0-9]+)/$', ChangeApp.log_details),
+    url(r'^context/$', ChangeApp.ajax_context)
 
 ]
