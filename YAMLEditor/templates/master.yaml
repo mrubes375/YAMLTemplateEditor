@@ -13,7 +13,7 @@ navbar:
 about: Created by Matthew Rubenstein
 greeting: Welcome to YAMLUpdater
 text1: ipsums
-text2: this is some more sample text
+text2: this is some more sample texts
 log:
   title: Log
   details:
