@@ -20,12 +20,12 @@ class ChangeApp:
         if request.is_ajax():
             beg = datetime.now()
             data = json.loads(request.body.decode('utf-8'))
-            tag = data['tag'].strip()
-            new_context = data['new_context'].strip()
+            tag = data['tag']
+            new_context = data['new_context']
             update = ChangeYAML(tag, new_context).update()
             old_context = update[0]
             user = request.user
-            search = FileSearcher()
+            search = FileSearcher(template_dir)
             files_changed = ', '.join(search.get_files_changed(tag))
             commit = GitCommitYaml(git_username, git_pass, tag, update[1].encode())
             change = Change(files_changed=files_changed, user=user, template=tag, old_context=old_context, new_context=new_context)

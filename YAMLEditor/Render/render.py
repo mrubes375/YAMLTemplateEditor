@@ -15,7 +15,7 @@ def render_with_yaml(request, page, context={}):
     if request.user.is_staff:
         template_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'templates')
         html = DataBindingDOM(template_dir, page).bind()
-        temp_files = nested_temp_file_extender(html)
+        temp_files = nested_temp_file_extender(html, template_dir)
         file_name = temp_files[0]
     else:
         file_name = page

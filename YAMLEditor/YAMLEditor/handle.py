@@ -11,18 +11,15 @@ import ruamel.yaml
 from github3 import login
 
 class FileSearcher:
-    def __init__(self):
-        self.template_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'templates')
+    def __init__(self, template_dir):
+        self.template_dir = template_dir
         os.chdir(self.template_dir)
         self.files_changed = list()
         self.all_files = list()
-        self.time = None
         self.template = None
         self.old_context = None
         self.new_context = None
-        self.yaml = get_yaml()
-    def get_yaml(self):
-        return self.yaml
+    #O(n)
     def get_all_files(self):
         os.chdir(self.template_dir)
         queue = os.listdir()
@@ -163,7 +160,6 @@ class HTMLTemplate:
             return self.text.replace("<html>", "", 1).replace("</html>", "", 1).replace("<body>", "", 1).replace("</body>", "", 1)
         elif self.template_type=='base':
             return self.text.replace("<html>", "", 1).replace("</html>", "", 1).replace("<body>", "", 1).replace("</body>", "", 1)
-            #.replace("<p data='", "").replace("'>", "")
 
 
         elif self.template_type=='extends':
@@ -172,9 +168,8 @@ class HTMLTemplate:
         pattern = compile(r'(?<=' + self.template_type + '\s")([A-Za-z0-9_\./\\-]*)')
         return pattern.findall(self.text)
 
-def nested_temp_file_extender(template_list):
+def nested_temp_file_extender(template_list, template_dir):
     temp_files = []
-    template_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'templates')
     while len(template_list)!=0:
         popped_template = template_list.pop()
         if popped_template[0]=='base':
@@ -187,7 +182,6 @@ def nested_temp_file_extender(template_list):
         temp_files.append(rendered_file)
     rendered_file = NamedTemporaryFile(mode='r+', dir=template_dir, suffix='.html')
     rendered_file.write(base_text)
-    print(base_text)
     file_name = list(rendered_file.name.split('/'))[-1]
     rendered_file.read()
     temp_files.append(rendered_file)
