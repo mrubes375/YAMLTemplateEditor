@@ -98,25 +98,23 @@ class DataBindingDOM:
                 index+=1
         for elem in html(text=compile(r'\{{(.*?)\}}')):
             if 'my_yaml' in elem.parent.text:
-                elem.parent['data'] = strip_double_curly_brackets(elem.parent.text)
+                if 'my_yaml' in elem.parent.text:
+                    element_match = match(r'\{{(.*?)\}}', elem.parent.text)
+                if element_match is not None:
+                    elem.parent['data'] = element_match.group(1).strip()
         list_text.append([self.template_type, self.template_name, str(html)])
         return list_text
 
 def strip_double_curly_brackets(tag):
     return tag.replace('{{ ', "").replace(' }}', "")
+
 class ChangeYAML:
     def __init__(self, tag, new_context):
         self.tag = tag
         self.new_context = new_context
         self.old_context = None
     def update(self):
-        base = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        template_dir = os.path.join(base, 'templates')
-        os.chdir(template_dir)
-        yaml_file = open("master.yaml", 'r+')
-        contents = yaml_file.read()
-        yaml_file.close()
-        yaml = ruamel.yaml.load(contents, ruamel.yaml.RoundTripLoader)
+        yaml = get_yaml()
         access_keys = self.tag.split('.')[1:]
         count = len(access_keys)
         if count>1:
@@ -133,10 +131,17 @@ class ChangeYAML:
             old_context = yaml[changed_key]
             yaml[changed_key] = self.new_context
         new_contents = ruamel.yaml.dump(yaml, Dumper=ruamel.yaml.RoundTripDumper)
-        yaml = open("master.yaml", 'w+')
-        yaml.write(new_contents)
-        yaml.close()
+        FileWriter('master.yaml', new_contents).write()
         return (old_context, new_contents)
+
+class FileWriter:
+    def __init__(self, file_name, contents):
+        self.file_name = file_name
+        self.contents = contents
+    def write(self):
+        writing = open(self.file_name, 'w+')
+        writing.write(self.contents)
+        writing.close()
 
 class GitCommitYaml:
     def __init__(self, username, password, tag, new_contents):
@@ -157,7 +162,10 @@ class HTMLTemplate:
         if self.template_type=='include':
             return self.text.replace("<html>", "", 1).replace("</html>", "", 1).replace("<body>", "", 1).replace("</body>", "", 1)
         elif self.template_type=='base':
-            return self.text.replace("<p>", "", 1).replace("</p>", "", 1).replace("<html>", "", 1).replace("</html>", "", 1).replace("<body>", "", 1).replace("</body>", "", 1)
+            return self.text.replace("<html>", "", 1).replace("</html>", "", 1).replace("<body>", "", 1).replace("</body>", "", 1)
+            #.replace("<p data='", "").replace("'>", "")
+
+
         elif self.template_type=='extends':
             return self.text
     def tag_search(self):
@@ -179,6 +187,7 @@ def nested_temp_file_extender(template_list):
         temp_files.append(rendered_file)
     rendered_file = NamedTemporaryFile(mode='r+', dir=template_dir, suffix='.html')
     rendered_file.write(base_text)
+    print(base_text)
     file_name = list(rendered_file.name.split('/'))[-1]
     rendered_file.read()
     temp_files.append(rendered_file)
