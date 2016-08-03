@@ -68,10 +68,10 @@ class FileSearcher:
     def search_files(self, template):
         extends = self.search(template, 'extends')
         include = self.search(template, 'include')
-        self.files_changed = extends.union(include)
+        return extends.union(include)
     def get_files_changed(self, tag):
         self.get_all_files()
-        self.search_files(tag)
+        self.files_changed = self.search_files(tag)
         return self.files_changed
 
 class DataBindingDOM:
@@ -82,36 +82,19 @@ class DataBindingDOM:
             self.template_type = 'base'
         self.template_name = template
         self.template_dir = template_dir
-        os.chdir(template_dir)
-        self.template_location = os.path.join(template_dir, template)
-        self.text = open(self.template_location, 'r+').read()
-    def bind(self, list_text=None):
-        if list_text is None:
-            list_text = []
+        self.text = open(os.path.join(template_dir, template), 'r+').read()
+    def bind(self):
+        list_text = []
         html = BeautifulSoup(self.text, "lxml")
-        find_extends = HTMLTemplate(self.text, 'extend').tag_search()
-        print(find_extends)
-        if find_extends is not None:
-            extended_temp = find_extends.group(0)
-            extended = DataBindingDOM(self.template_dir, extended_temp, 'extend')
-            extended_text = extended.bind()
-            list_text = list_text + extended_text
-        find_include = HTMLTemplate(self.text, 'include').tag_search()
-        print(find_include)
-        if find_include is not None:
-            i = 0
-            group = find_include.group(i)
-            while group is not None:
-                include_temp = find_include.group(i)
-                included = DataBindingDOM(self.template_dir, include_temp, 'include')
-                include_text = included.bind()
-                list_text = list_text + include_text
-                i+=1
-                try:
-                    group = find_include.group(i)
-                except IndexError:
-                    group = None
-                    break
+        for supporting_template in {'extends', 'include'}:
+            find = HTMLTemplate(self.text, supporting_template).tag_search()
+            index = 0
+            while len(find)>index:
+                template = find[index]
+                databinder = DataBindingDOM(self.template_dir, template, supporting_template)
+                text = databinder.bind()
+                list_text = list_text + text
+                index+=1
         for elem in html(text=compile(r'\{{(.*?)\}}')):
             if 'my_yaml' in elem.parent.text:
                 element_match = match(r'\{{(.*?)\}}', elem.parent.text)
@@ -171,11 +154,11 @@ class HTMLTemplate:
             return self.text.replace("<html>", "", 1).replace("</html>", "", 1).replace("<body>", "", 1).replace("</body>", "", 1)
         elif self.template_type=='base':
             return self.text.replace("<p>", "", 1).replace("</p>", "", 1).replace("<html>", "", 1).replace("</html>", "", 1).replace("<body>", "", 1).replace("</body>", "", 1)
-        elif self.template_type=='extend':
+        elif self.template_type=='extends':
             return self.text
     def tag_search(self):
-        regex_pattern = r'(?<=' + self.template_type + '\s")([A-Za-z0-9_\./\\-]*)'
-        return search(regex_pattern, self.text)
+        pattern = compile(r'(?<=' + self.template_type + '\s")([A-Za-z0-9_\./\\-]*)')
+        return pattern.findall(self.text)
 
 def nested_temp_file_extender(template_list):
     temp_files = []
