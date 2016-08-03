@@ -70,6 +70,7 @@ class FileSearcher:
         include = self.search(template, 'include')
         return extends.union(include)
     def get_files_changed(self, tag):
+        #O(n^2)
         self.get_all_files()
         self.files_changed = self.search_files(tag)
         return self.files_changed
@@ -97,12 +98,12 @@ class DataBindingDOM:
                 index+=1
         for elem in html(text=compile(r'\{{(.*?)\}}')):
             if 'my_yaml' in elem.parent.text:
-                element_match = match(r'\{{(.*?)\}}', elem.parent.text)
-                if element_match is not None:
-                    elem.parent['data'] = element_match.group(1).strip()
+                elem.parent['data'] = strip_double_curly_brackets(elem.parent.text)
         list_text.append([self.template_type, self.template_name, str(html)])
         return list_text
 
+def strip_double_curly_brackets(tag):
+    return tag.replace('{{ ', "").replace(' }}', "")
 class ChangeYAML:
     def __init__(self, tag, new_context):
         self.tag = tag
@@ -132,6 +133,9 @@ class ChangeYAML:
             old_context = yaml[changed_key]
             yaml[changed_key] = self.new_context
         new_contents = ruamel.yaml.dump(yaml, Dumper=ruamel.yaml.RoundTripDumper)
+        yaml = open("master.yaml", 'w+')
+        yaml.write(new_contents)
+        yaml.close()
         return (old_context, new_contents)
 
 class GitCommitYaml:

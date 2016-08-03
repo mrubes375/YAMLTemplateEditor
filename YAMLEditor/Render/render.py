@@ -4,7 +4,6 @@ from YAMLEditor.handle import DataBindingDOM, nested_temp_file_extender
 from YAMLEditor.yaml_config import get_yaml
 import os
 
-
 def context_dict(request, context, function=get_yaml):
     con_dict = {'user': request.user, 'my_yaml': get_yaml()}
     fin_dict = con_dict.copy()
