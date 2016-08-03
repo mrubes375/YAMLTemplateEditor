@@ -23,7 +23,7 @@ log:
     template: Template
 updater:
   date: Date Modified
-  files_changed: Files Modified
+  files_changed: Files Change
   user: User
   template: Tag
   old_context: Old Context
