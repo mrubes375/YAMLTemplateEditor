@@ -150,7 +150,6 @@ YAMLEditor/YAMLEditor/secrets.py
 YAMLEditor/profiles/migrations/*
 YAMLEditor/update/migrations/*
 YAMLEditor/prod_static
-YAMLEditor/templates/tmp*
-YAMLEditor/templates/*.yml
+YAMLEditor/templates/*.yaml
 
 *.swp
