@@ -65,6 +65,7 @@ function ChangeTemplateValue(tag, new_context) {
 var editables = $('[data]');
 
 $(document).ready(function (){
+    $('[data]').css('color', 'white');
     $("button.edit").clickToggle(function() {
         editables.editable();
         editables.on('save', function(e, editable){
