@@ -14,3 +14,16 @@ body {
 /*nav div a {
     color: white;
 }*/
+
+.dropdown :not(.dropdown-toggle) {
+    background: black;
+}
+
+.navbar-default .navbar-nav>.open>a, .navbar-default .navbar-nav>.open>a:focus, .navbar-default .navbar-nav>.open>a:hover {
+    color: white;
+    background: black;
+}
+
+.dropdown-menu>li>a:hover {
+    background: black;
+}
