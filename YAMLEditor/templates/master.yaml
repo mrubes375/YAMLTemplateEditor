@@ -12,8 +12,8 @@ navbar:
     log: Log
 about: Created by Matthew Rubenstein
 greeting: Welcome to YAMLUpdater
-text1: lorem ipsum oisadijsia
-text2: this is some more sample textsaas
+text1: lorem ipsum
+text2: sample text
 log:
   title: Log
   details:
