@@ -1,0 +1,45 @@
+navbar:
+  name: YamlUpdater
+  login: Login
+  logout: Logout
+  home: Home
+  about: About Me
+  register: Register
+  update_button: Editing
+  dropdown:
+    title: Updater
+    start: Start App
+    log: Log
+about: Created by Matthew Rubenstein
+greeting: Welcome to YAMLUpdater
+<<<<<<< HEAD
+text1: lorem ipsum s
+text2: this is some more sample textsaas
+=======
+text1: lorem ipsum
+text2: sample text
+>>>>>>> Indexing
+log:
+  title: Log
+  details:
+    title: Change
+    date: Date
+    user: User
+    template: Template
+updater:
+  date: Date Changed
+  files_changed: Files Change
+  user: User
+  template: Template Tag
+  old_context: Old Context
+  new_context: New Context
+response:
+  404:
+    title: 404
+    text: 404 Not Found
+  500:
+    title: 500
+    text: 500 Internal Server Error
+no_access:
+  text: You do not have access to this page!
+  title: No Access
