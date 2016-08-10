@@ -159,9 +159,7 @@ class HTMLTemplate:
         if self.template_type=='include':
             return self.text.replace("<html>", "", 1).replace("</html>", "", 1).replace("<body>", "", 1).replace("</body>", "", 1)
         elif self.template_type=='base':
-            return self.text.replace("<html>", "", 1).replace("</html>", "", 1).replace("<body>", "", 1).replace("</body>", "", 1)
-
-
+            return self.text.replace("<html>", "", 1).replace("</html>", "", 1).replace("<body>", "", 1).replace("</body>", "", 1).replace("<p>", "", 1).replace("</p>", "", 1)
         elif self.template_type=='extends':
             return self.text
     def tag_search(self):
